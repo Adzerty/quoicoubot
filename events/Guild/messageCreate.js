@@ -28,7 +28,6 @@ const checkForQuoicoubeh = (msg) => {
 
 const checkForCramptes = async (msg) => {
   const r = Math.random();
-  console.log(r);
   if (r < FIND_CRAMPTES) {
     let user;
     const won = Math.floor(Math.random() * 25) + 5;
