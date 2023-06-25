@@ -1,4 +1,4 @@
-const { client } = require("../../index");
+const { client, supabase } = require("../../index");
 const config = require("../../config/config.js");
 const colors = require("colors");
 const { EmbedBuilder } = require("discord.js");
