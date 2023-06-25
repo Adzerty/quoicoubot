@@ -38,7 +38,7 @@ module.exports = {
 
     const { data: challenged, error: errorChallenged } = await supabase
       .from("crampteur")
-      .select("id")
+      .select("id, username")
       .eq("username", other);
 
     console.log(challenged);
@@ -106,13 +106,13 @@ module.exports = {
         if (reaction._emoji.name == "👍") {
           const { data: challengedIncrement, error: errorCIncrement } =
             await supabase.rpc("increment", {
-              x: cramptes,
+              x: -1 * cramptes,
               row_id: challenged[0].id,
             });
 
           const { data: playerIncrement, error: errorPIncrement } =
             await supabase.rpc("increment", {
-              x: cramptes,
+              x: -1 * cramptes,
               row_id: message.author.id,
             });
 
@@ -122,7 +122,9 @@ module.exports = {
             .insert({
               id: uuid,
               challenger_id: message.author.id,
+              challenger_name: message.author.username,
               challenged_id: challenged[0].id,
+              challenged_name: challenged[0].username,
               description: description,
               bet: cramptes,
             });
