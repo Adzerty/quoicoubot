@@ -8,11 +8,14 @@ const { supabase } = require("../../../index");
 
 const riotKey = config.Riot.KEY;
 
+const WIN = "WIN";
+const LOSE = "LOSE";
+
 module.exports = {
   config: {
     name: "lolbetvalidate", // Name of Command
     description: "Validate a previous bet", // Command Description
-    usage: "?lolbetverify", // Command usage
+    usage: "?lolbetvalidate", // Command usage
   },
   permissions: ["SendMessages"], // User permissions needed
   owner: false, // Owner only?
@@ -59,12 +62,6 @@ module.exports = {
     );
     const resMatch = await matchFetch.json();
 
-    console.log("BET : ");
-    console.log(bet[0]);
-
-    console.log("MATCH : ");
-    console.log(resMatch.info);
-
     if (bet[0].match_beginning_timestamp <= resMatch.info.gameStartTimestamp) {
       if (
         resMatch.info.gameStartTimestamp - bet[0].match_beginning_timestamp <
@@ -79,7 +76,7 @@ module.exports = {
           .update({ finished: true })
           .eq("id", bet[0].id);
 
-        if (participant.win == bet[0].win_or_lose) {
+        if (participant.win == (bet[0].win_or_lose == WIN)) {
           const { data, error: errorIncrement } = await supabase.rpc(
             "increment",
             {
