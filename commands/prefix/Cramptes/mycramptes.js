@@ -25,7 +25,7 @@ module.exports = {
     message.reply({
       embeds: [
         new EmbedBuilder()
-          .setDescription(`Tu as ${amount} cramptés ${user[0].username}!`)
+          .setDescription(`💸 Tu as ${amount} cramptés ${user[0].username}! 💸`)
           .setColor("Blue"),
       ],
     });

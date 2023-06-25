@@ -15,14 +15,14 @@ module.exports = {
   name: "messageCreate",
 };
 
-const checkForQuoicoubeh = (msg) => {
+const checkFor = (msg, str, res) => {
   if (
-    msg.content.endsWith("quoi") ||
-    msg.content.endsWith("quoi ?") ||
-    msg.content.endsWith("quoi.") ||
-    msg.content.endsWith("quoi !")
+    msg.content.endsWith(str) ||
+    msg.content.endsWith(str + " ?") ||
+    msg.content.endsWith(str + ".") ||
+    msg.content.endsWith(str + " !")
   ) {
-    msg.reply("Quoicoubeh");
+    msg.reply(res);
   }
 };
 
@@ -63,7 +63,8 @@ client.on("messageCreate", async (message) => {
 
   if (!message.content.startsWith(prefix)) {
     await checkForCramptes(message);
-    checkForQuoicoubeh(message);
+    checkFor(message, "quoi", "Quoicoubeh");
+    checkFor(message, "hein", "Apagnan");
     return;
   }
   if (!message.guild) return;
