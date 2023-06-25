@@ -40,7 +40,7 @@ module.exports = {
     }
 
     const matchsFetch = await fetch(
-      `https://europe.api.riotgames.com/lol/match/v5/matches/by-puuid/${bet[0].puuid}/ids?count=3`,
+      `https://europe.api.riotgames.com/lol/match/v5/matches/by-puuid/${bet[0].puuid}/ids?count=1`,
       {
         headers: {
           "X-Riot-Token": riotKey,
@@ -50,81 +50,75 @@ module.exports = {
 
     const resMatchs = await matchsFetch.json();
 
-    for (let i = 0; i < resMatchs.length; i++) {
-      const id = resMatchs[i];
+    const id = resMatchs[0];
 
-      const matchFetch = await fetch(
-        `https://europe.api.riotgames.com/lol/match/v5/matches/${id}`,
-        {
-          headers: {
-            "X-Riot-Token": riotKey,
-          },
-        }
-      );
+    const matchFetch = await fetch(
+      `https://europe.api.riotgames.com/lol/match/v5/matches/${id}`,
+      {
+        headers: {
+          "X-Riot-Token": riotKey,
+        },
+      }
+    );
+    const resMatch = await matchFetch.json();
 
-      const resMatch = await matchFetch.json();
-
+    if (bet[0].match_beginning_timestamp <= resMatch.info.gameStartTimestamp) {
       if (
-        bet[0].match_beginning_timestamp <= resMatch.info.gameStartTimestamp
+        resMatch.info.gameStartTimestamp - bet[0].match_beginning_timestamp <
+        100000
       ) {
-        if (
-          resMatch.info.gameStartTimestamp - bet[0].match_beginning_timestamp <
-          100000
-        ) {
-          const participant = resMatch.info.participants.find(
-            (p) => p.puuid == bet[0].puuid
+        const participant = resMatch.info.participants.find(
+          (p) => p.puuid == bet[0].puuid
+        );
+
+        const { data: betUpdated, errorLolbetUpdated } = await supabase
+          .from("lolbet")
+          .update({ finished: true })
+          .eq("id", bet[0].id);
+
+        if (participant.win == bet[0].win_or_lose) {
+          const { data, error: errorIncrement } = await supabase.rpc(
+            "increment",
+            {
+              x: bet[0].bet * bet[0].multiplier,
+              row_id: message.author.id,
+            }
           );
 
-          const { data: betUpdated, errorLolbetUpdated } = await supabase
-            .from("lolbet")
-            .update({ finished: true })
-            .eq("id", bet[0].id);
-
-          if (participant.win == bet[0].win_or_lose) {
-            const { data, error: errorIncrement } = await supabase.rpc(
-              "increment",
-              {
-                x: bet[0].bet * bet[0].multiplier,
-                row_id: message.author.id,
-              }
-            );
-
-            message.reply({
-              embeds: [
-                new EmbedBuilder()
-                  .setDescription(
-                    `🎉 Pari réussi ! Tu as gagné ${
-                      bet[0].bet * bet[0].multiplier
-                    } cramptés ! 🎉`
-                  )
-                  .setColor("Green"),
-              ],
-            });
-          } else {
-            message.reply({
-              embeds: [
-                new EmbedBuilder()
-                  .setDescription(`🫣 Aie aie aie tu as perdu tes cramptés 🫣`)
-                  .setColor("Red"),
-              ],
-            });
-          }
-          i = resMatchs.length + 10;
-          return;
+          message.reply({
+            embeds: [
+              new EmbedBuilder()
+                .setDescription(
+                  `🎉 Pari réussi ! Tu as gagné ${
+                    bet[0].bet * bet[0].multiplier
+                  } cramptés ! 🎉`
+                )
+                .setColor("Green"),
+            ],
+          });
+        } else {
+          message.reply({
+            embeds: [
+              new EmbedBuilder()
+                .setDescription(`🫣 Aie aie aie tu as perdu tes cramptés 🫣`)
+                .setColor("Red"),
+            ],
+          });
         }
-      } else {
-        message.reply({
-          embeds: [
-            new EmbedBuilder()
-              .setDescription(
-                `⏰ La game est toujours en cours, il n'est pas possible de valider le pari ! ⏰`
-              )
-              .setColor("Yellow"),
-          ],
-        });
-
         return;
       }
+    } else {
+      message.reply({
+        embeds: [
+          new EmbedBuilder()
+            .setDescription(
+              `⏰ La game est toujours en cours, il n'est pas possible de valider le pari ! ⏰`
+            )
+            .setColor("Yellow"),
+        ],
+      });
+
+      return;
     }
 
     const { data: betUpdated, errorLolbetUpdated } = await supabase
