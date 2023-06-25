@@ -1,13 +1,7 @@
-const client = require("../../index");
+const { client } = require("../../index");
 const config = require("../../config/config.js");
 const colors = require("colors");
 const { EmbedBuilder } = require("discord.js");
-
-const { createClient } = require("@supabase/supabase-js");
-
-const supabaseUrl = config.Supabase.URL;
-const supabaseKey = config.Supabase.KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
 
 module.exports = {
   name: "ready.js",
@@ -30,7 +24,7 @@ const checkForReaction = async (client) => {
       embeds: [
         new EmbedBuilder()
           .setDescription(
-            `${won} cramptés sauvages sont apparus, soit le premier à réagir pour les remporter`
+            `🚨 ${won} cramptés sauvages sont apparus, soit le premier à réagir pour les remporter 🚨`
           )
           .setColor("Purple"),
       ],
@@ -52,7 +46,7 @@ const checkForReaction = async (client) => {
       .awaitReactions({
         filter: collectorFilter,
         max: 1,
-        time: 60000,
+        time: 1000 * 60 * 5,
         errors: ["time"],
       })
       .then(async (collected) => {
@@ -78,7 +72,7 @@ const checkForReaction = async (client) => {
       })
       .catch((collected) => {
         console.log(collected);
-        res.reply("You reacted with neither a thumbs up, nor a thumbs down.");
+        res.reply("😢 Pas de chances, les cramptés ont disparu");
       });
   }
 };

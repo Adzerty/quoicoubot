@@ -1,10 +1,7 @@
 const { EmbedBuilder } = require("discord.js");
-const { createClient } = require("@supabase/supabase-js");
 const config = require("../../../config/config");
 
-const supabaseUrl = config.Supabase.URL;
-const supabaseKey = config.Supabase.KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
+const { supabase } = require("../../../index");
 
 module.exports = {
   config: {

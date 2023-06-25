@@ -1,13 +1,9 @@
 const { EmbedBuilder } = require("discord.js");
-const { createClient } = require("@supabase/supabase-js");
+const { supabase } = require("../../../index");
 const config = require("../../../config/config");
 const dateformat = import("dateformat");
 
 const fetch = require("node-fetch");
-
-const supabaseUrl = config.Supabase.URL;
-const supabaseKey = config.Supabase.KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
 
 const riotKey = config.Riot.KEY;
 

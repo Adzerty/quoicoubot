@@ -1,13 +1,8 @@
 const { EmbedBuilder, PermissionsBitField, codeBlock } = require("discord.js");
-const client = require("../../index");
+const { client, supabase } = require("../../index");
 const config = require("../../config/config.js");
 const { QuickDB } = require("quick.db");
 const db = new QuickDB();
-const { createClient } = require("@supabase/supabase-js");
-
-const supabaseUrl = config.Supabase.URL;
-const supabaseKey = config.Supabase.KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
 
 const FIND_CRAMPTES = 0.05;
 

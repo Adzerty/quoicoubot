@@ -1,13 +1,10 @@
 const { EmbedBuilder } = require("discord.js");
-const { createClient } = require("@supabase/supabase-js");
 const config = require("../../../config/config");
 const dateformat = import("dateformat");
 
 const fetch = require("node-fetch");
 
-const supabaseUrl = config.Supabase.URL;
-const supabaseKey = config.Supabase.KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
+const { supabase } = require("../../../index");
 
 const riotKey = config.Riot.KEY;
 
@@ -61,6 +58,12 @@ module.exports = {
       }
     );
     const resMatch = await matchFetch.json();
+
+    console.log("BET : ");
+    console.log(bet[0]);
+
+    console.log("MATCH : ");
+    console.log(resMatch.info);
 
     if (bet[0].match_beginning_timestamp <= resMatch.info.gameStartTimestamp) {
       if (
