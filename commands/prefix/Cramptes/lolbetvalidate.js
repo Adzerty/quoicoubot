@@ -65,7 +65,7 @@ module.exports = {
     if (bet[0].match_beginning_timestamp <= resMatch.info.gameStartTimestamp) {
       if (
         resMatch.info.gameStartTimestamp - bet[0].match_beginning_timestamp <
-        100000
+        1000000
       ) {
         const participant = resMatch.info.participants.find(
           (p) => p.puuid == bet[0].puuid
