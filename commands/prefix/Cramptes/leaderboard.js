@@ -1,6 +1,7 @@
 const { EmbedBuilder } = require("discord.js");
 const config = require("../../../config/config");
 const { supabase } = require("../../../index");
+const reply = require("../../../utils/reply");
 
 module.exports = {
   config: {
@@ -25,13 +26,6 @@ module.exports = {
           u.cramptes_amount
         } cramptés \n`)
     );
-
-    message.reply({
-      embeds: [
-        new EmbedBuilder()
-          .setDescription(`🏆 Leaderboard : \n${leaderboard}`)
-          .setColor("Yellow"),
-      ],
-    });
+    reply(message, `🏆 Leaderboard : \n${leaderboard}`, "Yellow");
   },
 };

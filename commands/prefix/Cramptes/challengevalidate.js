@@ -1,5 +1,6 @@
 const { EmbedBuilder } = require("discord.js");
 const config = require("../../../config/config");
+const reply = require("../../../utils/reply");
 
 const { supabase } = require("../../../index");
 
@@ -16,15 +17,11 @@ module.exports = {
     // execute
 
     if (args.length != 1) {
-      message.reply({
-        embeds: [
-          new EmbedBuilder()
-            .setDescription(
-              `⛔️ Mauvaise utilisation de la commande challengevalidate ⛔️\n Tu dois l'utiliser comme cela : \n?challengevalidate <uuid du challenge>"`
-            )
-            .setColor("Red"),
-        ],
-      });
+      reply(
+        message,
+        `⛔️ Mauvaise utilisation de la commande challengevalidate ⛔️\n Tu dois l'utiliser comme cela : \n?challengevalidate <uuid du challenge>"`,
+        "Red"
+      );
 
       return;
     }
@@ -40,15 +37,11 @@ module.exports = {
     console.log(challenge);
 
     if (challenge.length == 0) {
-      message.reply({
-        embeds: [
-          new EmbedBuilder()
-            .setDescription(
-              `⛔️ Challenge impossible ! Le challenge n'existe pas ou plus. ⛔️`
-            )
-            .setColor("Red"),
-        ],
-      });
+      reply(
+        message,
+        `⛔️ Challenge impossible ! Le challenge n'existe pas ou plus. ⛔️`,
+        "Red"
+      );
 
       return;
     }
@@ -92,19 +85,15 @@ module.exports = {
               .update({ finished: true })
               .eq("id", challenge[0].id);
 
-          res.reply({
-            embeds: [
-              new EmbedBuilder()
-                .setDescription(
-                  `🥊 ${
-                    challenge[0].challenger_name
-                  } a gagné le challenge !\nIl a gagné ${
-                    challenge[0].bet * 2
-                  } cramptés`
-                )
-                .setColor("Green"),
-            ],
-          });
+          reply(
+            res,
+            `🥊 ${
+              challenge[0].challenger_name
+            } a gagné le challenge !\nIl a gagné ${
+              challenge[0].bet * 2
+            } cramptés`,
+            "Green"
+          );
         } else {
           const { data: challengerIncrement, error: errorCIncrement } =
             await supabase.rpc("increment", {
@@ -118,19 +107,15 @@ module.exports = {
               .update({ finished: true })
               .eq("id", challenge[0].id);
 
-          res.reply({
-            embeds: [
-              new EmbedBuilder()
-                .setDescription(
-                  `🥊 ${
-                    challenge[0].challenged_name
-                  } a gagné le challenge !\nIl a gagné ${
-                    challenge[0].bet * 2
-                  } cramptés`
-                )
-                .setColor("Green"),
-            ],
-          });
+          reply(
+            res,
+            `🥊 ${
+              challenge[0].challenged_name
+            } a gagné le challenge !\nIl a gagné ${
+              challenge[0].bet * 2
+            } cramptés`,
+            "Green"
+          );
         }
       })
       .catch((collected) => {

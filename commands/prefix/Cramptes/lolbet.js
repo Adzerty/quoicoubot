@@ -2,6 +2,7 @@ const { EmbedBuilder } = require("discord.js");
 const { supabase } = require("../../../index");
 const config = require("../../../config/config");
 const dateformat = import("dateformat");
+const reply = require("../../../utils/reply");
 
 const fetch = require("node-fetch");
 
@@ -45,15 +46,11 @@ module.exports = {
       isNaN(args[1]) ||
       (args[2] != WIN && args[2] != LOSE)
     ) {
-      message.reply({
-        embeds: [
-          new EmbedBuilder()
-            .setDescription(
-              `⛔️ Mauvaise utilisation de la commande lolbet ⛔️\n Tu dois l'utiliser comme cela : \n?lolbet <pseudo_d'invocateur> <mise> <WIN ou LOSE>`
-            )
-            .setColor("Red"),
-        ],
-      });
+      reply(
+        message,
+        `⛔️ Mauvaise utilisation de la commande lolbet ⛔️\n Tu dois l'utiliser comme cela : \n?lolbet <pseudo_d'invocateur> <mise> <WIN ou LOSE>`,
+        "Red"
+      );
 
       return;
     }
@@ -73,23 +70,19 @@ module.exports = {
     //Check if the user already has a bet started
     //if the bet isn't finished send a message to alert
     if (bet && bet.length > 0) {
-      message.reply({
-        embeds: [
-          new EmbedBuilder()
-            .setDescription(
-              `⛔️ Impossible de valider le pari ! Tu as déjà parié  ${
-                bet[0].bet
-              } cramptés le ${new Date(
-                bet[0].created_at
-              ).toDateString()} à ${new Date(
-                bet[0].created_at
-              ).toTimeString()} pour la ${
-                bet[0].win_or_lose == WIN ? "victoire" : "défaite"
-              } du prochain match de ${bet[0].summoner_name}  ⛔️`
-            )
-            .setColor("Orange"),
-        ],
-      });
+      reply(
+        message,
+        `⛔️ Impossible de valider le pari ! Tu as déjà parié  ${
+          bet[0].bet
+        } cramptés le ${new Date(
+          bet[0].created_at
+        ).toDateString()} à ${new Date(
+          bet[0].created_at
+        ).toTimeString()} pour la ${
+          bet[0].win_or_lose == WIN ? "victoire" : "défaite"
+        } du prochain match de ${bet[0].summoner_name}  ⛔️`,
+        "Orange"
+      );
 
       return;
     }
@@ -106,17 +99,13 @@ module.exports = {
     //check if the user has enough cramptes
     //if the user hasn't enough send a message to alert
     if (user[0].cramptes_amount < cramptes) {
-      message.reply({
-        embeds: [
-          new EmbedBuilder()
-            .setDescription(
-              `⛔️ Impossible de valider le pari ! Tu n'as pas assez de cramptés\n
-			  Mise : ${cramptes}\n
-			  Total personnel : ${user[0].cramptes_amount} ⛔️`
-            )
-            .setColor("Orange"),
-        ],
-      });
+      reply(
+        message,
+        `⛔️ Impossible de valider le pari ! Tu n'as pas assez de cramptés\n
+      Mise : ${cramptes}\n
+      Total personnel : ${user[0].cramptes_amount} ⛔️`,
+        "Orange"
+      );
 
       return;
     }
@@ -138,16 +127,11 @@ module.exports = {
     let summonerId;
 
     if (res.status && res.status.status_code) {
-      message.reply({
-        embeds: [
-          new EmbedBuilder()
-            .setDescription(
-              `⛔️ Impossible de valider le pari, l'invocateur n'existe pas ⛔️`
-            )
-            .setColor("Red"),
-        ],
-      });
-
+      reply(
+        message,
+        `⛔️ Impossible de valider le pari, l'invocateur n'existe pas ⛔️`,
+        "Red"
+      );
       return;
     } else {
       puuid = res.puuid;
@@ -174,15 +158,11 @@ module.exports = {
 
     //Not in game
     if (resSummonerSpectate.status) {
-      message.reply({
-        embeds: [
-          new EmbedBuilder()
-            .setDescription(
-              `⛔️ Impossible de valider le pari, l'invocateur ne joue pas actuellement ⛔️`
-            )
-            .setColor("Red"),
-        ],
-      });
+      reply(
+        message,
+        `⛔️ Impossible de valider le pari, l'invocateur ne joue pas actuellement ⛔️`,
+        "Red"
+      );
 
       return;
     } else {
@@ -237,26 +217,22 @@ module.exports = {
       row_id: message.author.id,
     });
 
-    message.reply({
-      embeds: [
-        new EmbedBuilder()
-          .setDescription(
-            `✅ Pari validé ! \n
-			  ${user[0].username} a misé ${cramptes} cramptés sur la ${
-              winOrLose == WIN ? "victoire" : "défaite"
-            } de ${summoner}\n
-			
-			Si tu remportes ton pari tu remporteras ${
-        cramptes * multiply
-      } (x${multiply}) cramptés pour l${
-              reasons.length > 1 ? "es raisons suivantes" : "a raison suivante"
-            }\n
-			${reasons.map((r) => {
-        return "-" + r + "\n";
-      })}✅`
-          )
-          .setColor("Green"),
-      ],
-    });
+    reply(
+      message,
+      `✅ Pari validé ! \n
+    ${user[0].username} a misé ${cramptes} cramptés sur la ${
+        winOrLose == WIN ? "victoire" : "défaite"
+      } de ${summoner}\n
+  
+  Si tu remportes ton pari tu remporteras ${
+    cramptes * multiply
+  } (x${multiply}) cramptés pour l${
+        reasons.length > 1 ? "es raisons suivantes" : "a raison suivante"
+      }\n
+  ${reasons.map((r) => {
+    return "-" + r + "\n";
+  })}✅`,
+      "Green"
+    );
   },
 };

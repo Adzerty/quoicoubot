@@ -2,6 +2,7 @@ const { EmbedBuilder } = require("discord.js");
 const config = require("../../../config/config");
 
 const { supabase } = require("../../../index");
+const reply = require("../../../utils/reply");
 
 const { v4: uuidv4 } = require("uuid");
 module.exports = {
@@ -16,15 +17,11 @@ module.exports = {
     // execute
 
     if (args.length < 3 || isNaN(args[1])) {
-      message.reply({
-        embeds: [
-          new EmbedBuilder()
-            .setDescription(
-              `⛔️ Mauvaise utilisation de la commande challenge ⛔️\n Tu dois l'utiliser comme cela : \n?challenge <pseudo discord> <mise> "<description du challenge>"`
-            )
-            .setColor("Red"),
-        ],
-      });
+      reply(
+        message,
+        `⛔️ Mauvaise utilisation de la commande challenge ⛔️\n Tu dois l'utiliser comme cela : \n?challenge <pseudo discord> <mise> "<description du challenge>"`,
+        "Red"
+      );
 
       return;
     }
@@ -44,29 +41,21 @@ module.exports = {
     console.log(challenged);
 
     if (challenged.length == 0) {
-      message.reply({
-        embeds: [
-          new EmbedBuilder()
-            .setDescription(
-              `⛔️ Challenge impossible ! Le challengé n'existe pas. ⛔️`
-            )
-            .setColor("Red"),
-        ],
-      });
+      reply(
+        message,
+        `⛔️ Challenge impossible ! Le challengé n'existe pas. ⛔️`,
+        "Red"
+      );
 
       return;
     }
 
     if (challenged.cramptes_amount < cramptes) {
-      message.reply({
-        embeds: [
-          new EmbedBuilder()
-            .setDescription(
-              `⛔️ Challenge impossible ! Le challengé n'a pas assez cramptés. ⛔️`
-            )
-            .setColor("Red"),
-        ],
-      });
+      reply(
+        message,
+        `⛔️ Challenge impossible ! Le challengé n'a pas assez cramptés. ⛔️`,
+        "Red"
+      );
 
       return;
     }
