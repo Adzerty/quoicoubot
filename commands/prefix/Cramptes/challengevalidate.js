@@ -36,7 +36,7 @@ module.exports = {
 
     console.log(challenge);
 
-    if (challenge.length == 0) {
+    if (!challenge || challenge.length == 0) {
       reply(
         message,
         `⛔️ Challenge impossible ! Le challenge n'existe pas ou plus. ⛔️`,
@@ -94,6 +94,28 @@ module.exports = {
             } cramptés`,
             "Green"
           );
+
+          const { data: challengeBets, error: errorChallengeBet } =
+            await supabase
+              .from("challengebet")
+              .select()
+              .eq("challenge", challenge[0].id)
+              .eq("challenger", challenge[0].challenger_id);
+
+          challengeBets.forEach(async (chal) => {
+            await supabase.rpc("increment", {
+              x: 1.5 * chal.bet,
+              row_id: chal.user,
+            });
+
+            reply(
+              res,
+              `💰 ${chal.username} avait parié sur sa victoire, il gagne ${
+                chal.bet * 1.5
+              } cramptés 💰`,
+              "Green"
+            );
+          });
         } else {
           const { data: challengerIncrement, error: errorCIncrement } =
             await supabase.rpc("increment", {
@@ -116,6 +138,28 @@ module.exports = {
             } cramptés`,
             "Green"
           );
+
+          const { data: challengeBets, error: errorChallengeBet } =
+            await supabase
+              .from("challengebet")
+              .select()
+              .eq("challenge", challenge[0].id)
+              .eq("challenger", challenge[0].challenged_id);
+
+          challengeBets.forEach(async (chal) => {
+            await supabase.rpc("increment", {
+              x: 1.5 * chal.bet,
+              row_id: chal.user,
+            });
+
+            reply(
+              res,
+              `💰 ${chal.username} avait parié sur sa victoire, il gagne ${
+                chal.bet * 1.5
+              } cramptés 💰`,
+              "Green"
+            );
+          });
         }
       })
       .catch((collected) => {
