@@ -60,11 +60,16 @@ const checkForReaction = async (client) => {
           }
         );
 
+        const { data: crampteur, error: crampteurError } = await supabase
+          .from("crampteur")
+          .select("username, cramptes_amount")
+          .eq("id", firstReaction.id);
+
         res.reply({
           embeds: [
             new EmbedBuilder()
               .setDescription(
-                `🎉 ${firstReaction.username} a remporté les ${won} cramptés !`
+                `🎉 ${crampteur.username} a remporté les ${won} cramptés !\nIl a désormais ${crampteur.cramptes_amount} cramptés 🎉`
               )
               .setColor("Purple"),
           ],
