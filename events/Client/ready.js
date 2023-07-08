@@ -7,7 +7,7 @@ module.exports = {
   name: "ready.js",
 };
 
-const REACT_LUCK = 0.15;
+const REACT_LUCK = 0.1;
 
 const channelID = "1122502928176009296";
 
@@ -17,7 +17,7 @@ const checkForReaction = async (client) => {
   const r = Math.random();
   console.log(r);
   if (r < REACT_LUCK) {
-    const won = Math.floor(Math.random() * 50) + 5;
+    let won = Math.floor(Math.random() * 120) + 15;
 
     const channel = await client.channels.cache.get(channelID);
     const res = await channel.send({
@@ -65,11 +65,13 @@ const checkForReaction = async (client) => {
           .select("username, cramptes_amount")
           .eq("id", firstReaction.id);
 
+        console.log(crampteur);
+
         res.reply({
           embeds: [
             new EmbedBuilder()
               .setDescription(
-                `🎉 ${crampteur.username} a remporté les ${won} cramptés !\nIl a désormais ${crampteur.cramptes_amount} cramptés 🎉`
+                `🎉 ${crampteur[0].username} a remporté les ${won} cramptés !\nIl a désormais ${crampteur[0].cramptes_amount} cramptés 🎉`
               )
               .setColor("Purple"),
           ],
@@ -87,5 +89,5 @@ client.once("ready", async () => {
     "\n" + `[READY] ${client.user.tag} is up and ready to go.`.brightGreen
   );
 
-  setInterval(checkForReaction, 1000 * 60 * 5, client);
+  setInterval(checkForReaction, 1000, client);
 });
