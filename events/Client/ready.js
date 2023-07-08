@@ -89,5 +89,5 @@ client.once("ready", async () => {
     "\n" + `[READY] ${client.user.tag} is up and ready to go.`.brightGreen
   );
 
-  setInterval(checkForReaction, 1000, client);
+  setInterval(checkForReaction, 1000 * 60 * 5, client);
 });
