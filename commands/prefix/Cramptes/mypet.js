@@ -2,7 +2,7 @@ const { EmbedBuilder } = require("discord.js");
 const config = require("../../../config/config");
 const { supabase } = require("../../../index");
 const reply = require("../../../utils/reply");
-const { PET_TYPE, BUY_EGG, NEXT_EVOLUTION } = require("../../../utils/PET");
+const { PET_TYPE, BUY_EGG, NEXT_EVOLUTION } = require("../../../utils/pet");
 
 module.exports = {
   config: {
